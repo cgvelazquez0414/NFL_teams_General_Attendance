@@ -1,0 +1,935 @@
+install.packages("rvest")
+library(rvest)
+install.packages("magrittr")
+install.packages("httr")
+install.packages("dplyr")
+library(dplyr)
+install.packages("tidyr")
+library(tidyr)
+
+az_url <- "https://en.wikipedia.org/wiki/2022_Arizona_Cardinals_season"
+az <- read_html(az_url)
+
+az_weeks <- c('#mw-content-text > div.mw-content-ltr.mw-parser-output > div:nth-child(35)',
+              '#mw-content-text > div.mw-content-ltr.mw-parser-output > div:nth-child(38)',
+              '#mw-content-text > div.mw-content-ltr.mw-parser-output > div:nth-child(41)',
+              '#mw-content-text > div.mw-content-ltr.mw-parser-output > div:nth-child(44)',
+              '#mw-content-text > div.mw-content-ltr.mw-parser-output > div:nth-child(47)',
+              '#mw-content-text > div.mw-content-ltr.mw-parser-output > div:nth-child(50)',
+              '#mw-content-text > div.mw-content-ltr.mw-parser-output > div:nth-child(52)',
+              '#mw-content-text > div.mw-content-ltr.mw-parser-output > div:nth-child(55)',
+              '#mw-content-text > div.mw-content-ltr.mw-parser-output > div:nth-child(57)',
+              '#mw-content-text > div.mw-content-ltr.mw-parser-output > div:nth-child(59)',
+              '#mw-content-text > div.mw-content-ltr.mw-parser-output > div:nth-child(62)',
+              '#mw-content-text > div.mw-content-ltr.mw-parser-output > div:nth-child(64)',
+              '#mw-content-text > div.mw-content-ltr.mw-parser-output > div:nth-child(66)',
+              '#mw-content-text > div.mw-content-ltr.mw-parser-output > div:nth-child(68)',
+              '#mw-content-text > div.mw-content-ltr.mw-parser-output > div:nth-child(71)',
+              '#mw-content-text > div.mw-content-ltr.mw-parser-output > div:nth-child(73)',
+              '#mw-content-text > div.mw-content-ltr.mw-parser-output > div:nth-child(75)')
+
+az_weeks_extracted <- lapply(az_weeks, function(az_weeks) {
+  az %>% html_nodes(az_weeks) %>% html_text()
+})
+
+az_combined <- rbind(az_weeks_extracted)
+az_transposed_matrix <- t(az_combined)
+
+az_transposed <- as.data.frame(az_transposed_matrix)
+
+az_sep <- separate(az_transposed, az_weeks_extracted, into = c("beforeGA", "AfterGA"), sep = "Game attendance:")
+
+az_sep_ga <- separate(az_sep, AfterGA, into = c("GA", "PostGA"), sep = 7)
+
+az_sep_week <- separate(az_sep_ga, beforeGA, into = c("Week", "post_week"), sep = "–")
+
+View(az_sep_week)
+
+#----------------------------------------------------------------------- 
+falcons_url <- "https://en.wikipedia.org/wiki/2022_Atlanta_Falcons_season"
+falcons <- read_html(falcons_url)
+
+atl_weeks <- c('#mw-content-text > div.mw-content-ltr.mw-parser-output > div:nth-child(30)',
+               '#mw-content-text > div.mw-content-ltr.mw-parser-output > div:nth-child(32)',
+               '#mw-content-text > div.mw-content-ltr.mw-parser-output > div:nth-child(34)',
+               '#mw-content-text > div.mw-content-ltr.mw-parser-output > div:nth-child(36)',
+               '#mw-content-text > div.mw-content-ltr.mw-parser-output > div:nth-child(38)',
+               '#mw-content-text > div.mw-content-ltr.mw-parser-output > div:nth-child(40)',
+               '#mw-content-text > div.mw-content-ltr.mw-parser-output > div:nth-child(42)',
+               '#mw-content-text > div.mw-content-ltr.mw-parser-output > div:nth-child(44)',
+               '#mw-content-text > div.mw-content-ltr.mw-parser-output > div:nth-child(46)',
+               '#mw-content-text > div.mw-content-ltr.mw-parser-output > div:nth-child(48)',
+               '#mw-content-text > div.mw-content-ltr.mw-parser-output > div:nth-child(50)',
+               '#mw-content-text > div.mw-content-ltr.mw-parser-output > div:nth-child(52)',
+               '#mw-content-text > div.mw-content-ltr.mw-parser-output > div:nth-child(54)',
+               '#mw-content-text > div.mw-content-ltr.mw-parser-output > div:nth-child(56)',
+               '#mw-content-text > div.mw-content-ltr.mw-parser-output > div:nth-child(58)',
+               '#mw-content-text > div.mw-content-ltr.mw-parser-output > div:nth-child(60)',
+               '#mw-content-text > div.mw-content-ltr.mw-parser-output > div:nth-child(62)')
+
+atl_weeks_extracted <- lapply(atl_weeks, function(atl_weeks) {
+  falcons %>% html_nodes(atl_weeks) %>% html_text()
+})
+
+atl_combined <- rbind(atl_weeks_extracted)
+atl_transposed_matrix <- t(atl_combined)
+
+atl_transposed <- as.data.frame(atl_transposed_matrix)
+
+atl_sep <- separate(atl_transposed, atl_weeks_extracted, into = c("beforeGA", "AfterGA"), sep = "Game attendance:")
+
+atl_sep_ga <- separate(atl_sep, AfterGA, into = c("GA", "PostGA"), sep = 7)
+
+atl_sep_week <- separate(atl_sep_ga, beforeGA, into = c("Week", "post_week"), sep = "–")
+
+View(atl_sep_week)
+
+
+#----------------------------------------------------------------------
+ravens_url <- "https://en.wikipedia.org/wiki/2022_Baltimore_Ravens_season"
+ravens <- read_html(ravens_url)
+
+bal_weeks <- c('#mw-content-text > div.mw-content-ltr.mw-parser-output > div:nth-child(42)',
+               '#mw-content-text > div.mw-content-ltr.mw-parser-output > div:nth-child(45)',
+               '#mw-content-text > div.mw-content-ltr.mw-parser-output > div:nth-child(48)',
+               '#mw-content-text > div.mw-content-ltr.mw-parser-output > div:nth-child(51)',
+               '#mw-content-text > div.mw-content-ltr.mw-parser-output > div:nth-child(54)',
+               '#mw-content-text > div.mw-content-ltr.mw-parser-output > div:nth-child(57)',
+               '#mw-content-text > div.mw-content-ltr.mw-parser-output > div:nth-child(60)',
+               '#mw-content-text > div.mw-content-ltr.mw-parser-output > div:nth-child(63)',
+               '#mw-content-text > div.mw-content-ltr.mw-parser-output > div:nth-child(66)',
+               '#mw-content-text > div.mw-content-ltr.mw-parser-output > div:nth-child(68)',
+               '#mw-content-text > div.mw-content-ltr.mw-parser-output > div:nth-child(70)',
+               '#mw-content-text > div.mw-content-ltr.mw-parser-output > div:nth-child(73)',
+               '#mw-content-text > div.mw-content-ltr.mw-parser-output > div:nth-child(76)',
+               '#mw-content-text > div.mw-content-ltr.mw-parser-output > div:nth-child(78)',
+               '#mw-content-text > div.mw-content-ltr.mw-parser-output > div:nth-child(81)',
+               '#mw-content-text > div.mw-content-ltr.mw-parser-output > div:nth-child(84)',
+               '#mw-content-text > div.mw-content-ltr.mw-parser-output > div:nth-child(87)')
+
+bal_weeks_extracted <- lapply(bal_weeks, function(bal_weeks) {
+  ravens %>% html_nodes(bal_weeks) %>% html_text()})
+
+bal_combined <- rbind(bal_weeks_extracted)
+bal_transposed_matrix <- t(bal_combined)
+
+bal_transposed <- as.data.frame(bal_transposed_matrix)
+
+bal_sep <- separate(bal_transposed, bal_weeks_extracted, into = c("beforeGA", "AfterGA"), sep = "Game attendance:")
+
+bal_sep_ga <- separate(bal_sep, AfterGA, into = c("GA", "PostGA"), sep = 7)
+
+bal_sep_week <- separate(bal_sep_ga, beforeGA, into = c("Week", "post_week"), sep = "–")
+
+View(bal_sep_week)
+
+
+#----------------------------------------------------------------------
+
+bills_url <- "https://en.wikipedia.org/wiki/2022_Buffalo_Bills_season"
+bills <- read_html(bills_url)
+
+bills_weeks <- c('#mw-content-text > div.mw-content-ltr.mw-parser-output > div:nth-child(42)',
+               '#mw-content-text > div.mw-content-ltr.mw-parser-output > div:nth-child(45)',
+               '#mw-content-text > div.mw-content-ltr.mw-parser-output > div:nth-child(48)',
+               '#mw-content-text > div.mw-content-ltr.mw-parser-output > div:nth-child(52)',
+               '#mw-content-text > div.mw-content-ltr.mw-parser-output > div:nth-child(55)',
+               '#mw-content-text > div.mw-content-ltr.mw-parser-output > div:nth-child(58)',
+               '#mw-content-text > div.mw-content-ltr.mw-parser-output > div:nth-child(61)',
+               '#mw-content-text > div.mw-content-ltr.mw-parser-output > div:nth-child(63)',
+               '#mw-content-text > div.mw-content-ltr.mw-parser-output > div:nth-child(66)',
+               '#mw-content-text > div.mw-content-ltr.mw-parser-output > div:nth-child(71)',
+               '#mw-content-text > div.mw-content-ltr.mw-parser-output > div:nth-child(75)',
+               '#mw-content-text > div.mw-content-ltr.mw-parser-output > div:nth-child(78)',
+               '#mw-content-text > div.mw-content-ltr.mw-parser-output > div:nth-child(81)',
+               '#mw-content-text > div.mw-content-ltr.mw-parser-output > div:nth-child(83)',
+               '#mw-content-text > div.mw-content-ltr.mw-parser-output > div:nth-child(87)',
+               '#mw-content-text > div.mw-content-ltr.mw-parser-output > div:nth-child(90)',
+               '#mw-content-text > div.mw-content-ltr.mw-parser-output > div:nth-child(95)'
+               )
+bills_weeks_extracted <- lapply(bills_weeks, function(bills_weeks) {
+  bills %>% html_nodes(bills_weeks) %>% html_text()})
+
+bills_combined <- rbind(bills_weeks_extracted)
+bill_transposed_matrix <- t(bills_combined)
+
+bills_transposed <- as.data.frame(bill_transposed_matrix)
+
+bill_sep <- separate(bills_transposed, bills_weeks_extracted, into = c("beforeGA", "AfterGA"), sep = "Game attendance:")
+
+bill_sep_ga <- separate(bill_sep, AfterGA, into = c("GA", "PostGA"), sep = 7)
+
+bill_sep_week <- separate(bill_sep_ga, beforeGA, into = c("Week", "post_week"), sep = "–")
+
+View(bill_sep_week)
+
+#----------------------------------------------------------------------
+
+panthers_url <- "https://en.wikipedia.org/wiki/2022_Carolina_Panthers_season"
+panthers <- read_html(panthers_url)
+
+panther_weeks <- c('#mw-content-text > div.mw-content-ltr.mw-parser-output > div:nth-child(33)',
+                 '#mw-content-text > div.mw-content-ltr.mw-parser-output > div:nth-child(36)',
+                 '#mw-content-text > div.mw-content-ltr.mw-parser-output > div:nth-child(39)',
+                 '#mw-content-text > div.mw-content-ltr.mw-parser-output > div:nth-child(42)',
+                 '#mw-content-text > div.mw-content-ltr.mw-parser-output > div:nth-child(45)',
+                 '#mw-content-text > div.mw-content-ltr.mw-parser-output > div:nth-child(48)',
+                 '#mw-content-text > div.mw-content-ltr.mw-parser-output > div:nth-child(51)',
+                 '#mw-content-text > div.mw-content-ltr.mw-parser-output > div:nth-child(54)',
+                 '#mw-content-text > div.mw-content-ltr.mw-parser-output > div:nth-child(57)',
+                 '#mw-content-text > div.mw-content-ltr.mw-parser-output > div:nth-child(60)',
+                 '#mw-content-text > div.mw-content-ltr.mw-parser-output > div:nth-child(63)',
+                 '#mw-content-text > div.mw-content-ltr.mw-parser-output > div:nth-child(66)',
+                 '#mw-content-text > div.mw-content-ltr.mw-parser-output > div:nth-child(69)',
+                 '#mw-content-text > div.mw-content-ltr.mw-parser-output > div:nth-child(72)',
+                 '#mw-content-text > div.mw-content-ltr.mw-parser-output > div:nth-child(75)',
+                 '#mw-content-text > div.mw-content-ltr.mw-parser-output > div:nth-child(78)',
+                 '#mw-content-text > div.mw-content-ltr.mw-parser-output > div:nth-child(81)')
+
+pan_weeks_extracted <- lapply(panther_weeks, function(panther_weeks) {
+  panthers %>% html_nodes(panther_weeks) %>% html_text()})
+
+pan_combined <- rbind(pan_weeks_extracted)
+pan_transposed_matrix <- t(pan_combined)
+
+pan_transposed <- as.data.frame(pan_transposed_matrix)
+
+pan_sep <- separate(pan_transposed, pan_weeks_extracted, into = c("beforeGA", "AfterGA"), sep = "Game attendance:")
+
+pan_sep_ga <- separate(pan_sep, AfterGA, into = c("GA", "PostGA"), sep = 7)
+
+pan_sep_week <- separate(pan_sep_ga, beforeGA, into = c("Week", "post_week"), sep = "–")
+
+View(pan_sep_week)
+
+#----------------------------------------------------------------------
+
+bears_url <- "https://en.wikipedia.org/wiki/2022_Chicago_Bears_season"
+bears <- read_html(bears_url)
+
+bear_weeks <- c('#mw-content-text > div.mw-content-ltr.mw-parser-output > div:nth-child(39)',
+                   '#mw-content-text > div.mw-content-ltr.mw-parser-output > div:nth-child(41)',
+                   '#mw-content-text > div.mw-content-ltr.mw-parser-output > div:nth-child(43)',
+                   '#mw-content-text > div.mw-content-ltr.mw-parser-output > div:nth-child(45)',
+                   '#mw-content-text > div.mw-content-ltr.mw-parser-output > div:nth-child(47)',
+                   '#mw-content-text > div.mw-content-ltr.mw-parser-output > div:nth-child(49)',
+                   '#mw-content-text > div.mw-content-ltr.mw-parser-output > div:nth-child(51)',
+                   '#mw-content-text > div.mw-content-ltr.mw-parser-output > div:nth-child(54)',
+                   '#mw-content-text > div.mw-content-ltr.mw-parser-output > div:nth-child(56)',
+                   '#mw-content-text > div.mw-content-ltr.mw-parser-output > div:nth-child(59)',
+                   '#mw-content-text > div.mw-content-ltr.mw-parser-output > div:nth-child(62)',
+                   '#mw-content-text > div.mw-content-ltr.mw-parser-output > div:nth-child(64)',
+                   '#mw-content-text > div.mw-content-ltr.mw-parser-output > div:nth-child(66)',
+                   '#mw-content-text > div.mw-content-ltr.mw-parser-output > div:nth-child(69)',
+                   '#mw-content-text > div.mw-content-ltr.mw-parser-output > div:nth-child(72)',
+                   '#mw-content-text > div.mw-content-ltr.mw-parser-output > div:nth-child(74)',
+                   '#mw-content-text > div.mw-content-ltr.mw-parser-output > div:nth-child(77)')
+
+bear_weeks_extracted <- lapply(bear_weeks, function(bear_weeks) {
+  bears %>% html_nodes(bear_weeks) %>% html_text()})
+
+bear_combined <- rbind(bear_weeks_extracted)
+bear_transposed_matrix <- t(bear_combined)
+
+bear_transposed <- as.data.frame(bear_transposed_matrix)
+
+bear_sep <- separate(bear_transposed, bear_weeks_extracted, into = c("beforeGA", "AfterGA"), sep = "Game attendance:")
+
+bear_sep_ga <- separate(bear_sep, AfterGA, into = c("GA", "PostGA"), sep = 7)
+
+bear_sep_week <- separate(bear_sep_ga, beforeGA, into = c("Week", "post_week"), sep = "–")
+
+View(bear_sep_week)
+
+#----------------------------------------------------------------------
+
+bengals_url <- "https://en.wikipedia.org/wiki/2022_Cincinnati_Bengals_season"
+bengals <- read_html(bengals_url)
+
+panther_weeks <- c('',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+)
+
+
+
+#----------------------------------------------------------------------
+
+browns_url <- "https://en.wikipedia.org/wiki/2022_Cleveland_Browns_season"
+browns <- read_html(browns_url)
+
+panther_weeks <- c('',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+)
+
+
+
+#----------------------------------------------------------------------
+
+cowboys_url <- "https://en.wikipedia.org/wiki/2022_Dallas_Cowboys_season"
+cowboys <- read_html(cowboys_url)
+
+panther_weeks <- c('',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+)
+
+
+
+#----------------------------------------------------------------------
+
+broncos_url <- "https://en.wikipedia.org/wiki/2022_Denver_Broncos_season"
+broncos <- read_html(broncos_url)
+
+panther_weeks <- c('',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+)
+
+
+
+#----------------------------------------------------------------------
+
+lions_url <- "https://en.wikipedia.org/wiki/2022_Detroit_Lions_season"
+lions <- read_html(lions_url)
+
+panther_weeks <- c('',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+)
+
+
+
+#----------------------------------------------------------------------
+
+packers_url <- "https://en.wikipedia.org/wiki/2022_Green_Bay_Packers_season"
+packers <- read_html(packers_url)
+
+panther_weeks <- c('',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+)
+
+
+
+#----------------------------------------------------------------------
+
+texans_url <- "https://en.wikipedia.org/wiki/2022_Houston_Texans_season"
+texans <- read_html(texans_url)
+
+panther_weeks <- c('',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+)
+
+
+
+#----------------------------------------------------------------------
+
+colts_url <- "https://en.wikipedia.org/wiki/2022_Indianapolis_Colts_season"
+colts <- read_html(colts_url)
+
+panther_weeks <- c('',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+)
+
+
+
+#----------------------------------------------------------------------
+
+jaguars_url <- "https://en.wikipedia.org/wiki/2022_Jacksonville_Jaguars_season"
+jaguars <- read_html(jaguars_url)
+
+panther_weeks <- c('',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+)
+
+
+
+#----------------------------------------------------------------------
+
+
+chiefs_url <- "https://en.wikipedia.org/wiki/2022_Kansas_City_Chiefs_season"
+chiefs <- read_html(chiefs_url)
+
+panther_weeks <- c('',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+)
+
+
+
+#----------------------------------------------------------------------
+
+
+raiders_url <- "https://en.wikipedia.org/wiki/2022_Las_Vegas_Raiders_season"
+raiders <- read_html(raiders_url)
+
+
+panther_weeks <- c('',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+)
+
+
+
+#----------------------------------------------------------------------
+
+
+chargers_url <- "https://en.wikipedia.org/wiki/2022_Los_Angeles_Chargers_season"
+chargers <- read_html(chargers_url)
+
+panther_weeks <- c('',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+)
+
+
+
+#----------------------------------------------------------------------
+
+
+rams_url <- "https://en.wikipedia.org/wiki/2022_Los_Angeles_Rams_season"
+rams <- read_html(rams_url)
+
+panther_weeks <- c('',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+)
+
+
+
+#----------------------------------------------------------------------
+
+
+dolphins_url <- "https://en.wikipedia.org/wiki/2022_Miami_Dolphins_season"
+dolphins <- read_html(dolphins_url)
+
+panther_weeks <- c('',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+)
+
+
+
+#----------------------------------------------------------------------
+
+
+vikings_url <- "https://en.wikipedia.org/wiki/2022_Minnesota_Vikings_season"
+vikings <- read_html(vikings_url)
+
+panther_weeks <- c('',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+)
+
+
+
+#----------------------------------------------------------------------
+
+
+patriots_url <- "https://en.wikipedia.org/wiki/2022_New_England_Patriots_season"
+patriots <- read_html(patriots_url)
+
+panther_weeks <- c('',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+)
+
+
+
+#----------------------------------------------------------------------
+
+
+saints_url <- "https://en.wikipedia.org/wiki/2022_New_Orleans_Saints_season"
+saints <- read_html(saints_url)
+
+panther_weeks <- c('',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+)
+
+
+
+#----------------------------------------------------------------------
+
+
+giants_url <- "https://en.wikipedia.org/wiki/2022_New_York_Giants_season"
+giants <- read_html(giants_url)
+
+panther_weeks <- c('',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+)
+
+
+
+#----------------------------------------------------------------------
+
+
+jets_url <- "https://en.wikipedia.org/wiki/2022_New_York_Jets_season"
+jets <- read_html(jets_url)
+
+panther_weeks <- c('',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+)
+
+
+
+#----------------------------------------------------------------------
+
+
+eagles_url <- "https://en.wikipedia.org/wiki/2022_Philadelphia_Eagles_season"
+eagles <- read_html(eagles_url)
+
+panther_weeks <- c('',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+)
+
+
+
+#----------------------------------------------------------------------
+
+
+steelers_url <- "https://en.wikipedia.org/wiki/2022_Pittsburgh_Steelers_season"
+steelers <- read_html(steelers_url)
+
+panther_weeks <- c('',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+)
+
+
+
+#----------------------------------------------------------------------
+
+
+fortyniners_url <- "https://en.wikipedia.org/wiki/2022_San_Francisco_49ers_season"
+fortyniners <- read_html(fortyniners_url)
+
+panther_weeks <- c('',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+)
+
+
+
+#----------------------------------------------------------------------
+
+
+seahawks_url <- "https://en.wikipedia.org/wiki/2022_Seattle_Seahawks_season"
+seahawks <- read_html(seahawks_url)
+
+panther_weeks <- c('',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+)
+
+
+
+#----------------------------------------------------------------------
+
+
+buccaneers_url <- "https://en.wikipedia.org/wiki/2022_Tampa_Bay_Buccaneers_season"
+buccaneers <- read_html(buccaneers_url)
+
+panther_weeks <- c('',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+)
+
+
+
+#----------------------------------------------------------------------
+
+
+titans_url <- "https://en.wikipedia.org/wiki/2022_Tennessee_Titans_season"
+titans <- read_html(titans_url)
+
+panther_weeks <- c('',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+)
+
+
+
+#----------------------------------------------------------------------
+
+
+commanders_url <- "https://en.wikipedia.org/wiki/2022_Washington_Commanders_season"
+commanders <- read_html(commanders_url)
+
+
+panther_weeks <- c('',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+                   '',
+)
